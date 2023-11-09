@@ -1,43 +1,39 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
-class ContactForm extends Component {
-  state = {
-    name: '',
-    number: '',
-  };
+const ContactForm = ({ onAddContact }) => {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
 
-  handleChange = (e) => {
-    const { name, value } = e.target;
-    this.setState({ [name]: value });
-  };
-
-  handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    this.props.onAddContact({ ...this.state });
-    this.setState({ name: '', number: '' });
+
+    if (name.trim() === '' || number.trim() === '') {
+      alert('Please enter name and number.');
+      return;
+    }
+
+    onAddContact({ name, number });
+    resetForm();
   };
 
-  render() {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <input
-          type="text"
-          name="name"
-          value={this.state.name}
-          onChange={this.handleChange}
-          required
-        />
-        <input
-          type="tel"
-          name="number"
-          value={this.state.number}
-          onChange={this.handleChange}
-          required
-        />
-        <button type="submit">Add contact</button>
-      </form>
-    );
-  }
-}
+  const resetForm = () => {
+    setName('');
+    setNumber('');
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>
+        Name:
+        <input type="text" name="name" value={name} onChange={(e) => setName(e.target.value)} />
+      </label>
+      <label>
+        Number:
+        <input type="tel" name="number" value={number} onChange={(e) => setNumber(e.target.value)} />
+      </label>
+      <button type="submit">Add Contact</button>
+    </form>
+  );
+};
 
 export default ContactForm;
